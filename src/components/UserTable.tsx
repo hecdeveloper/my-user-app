@@ -42,17 +42,17 @@ export const UserTable = ({ users }: UserTableProps) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
-        <thead>
+        <thead className="bg-gradient-to-r from-blue-900 to-blue-800 text-white">
           <tr>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('name')}
             >
               <div className="flex items-center">
                 Name
                 {sortField === 'name' && (
-                  <span className="ml-1 text-blue-500">
+                  <span className="ml-1 text-blue-200">
                     {sortDirection === 'asc' ? '▲' : '▼'}
                   </span>
                 )}
@@ -60,13 +60,13 @@ export const UserTable = ({ users }: UserTableProps) => {
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('email')}
             >
               <div className="flex items-center">
                 Email
                 {sortField === 'email' && (
-                  <span className="ml-1 text-blue-500">
+                  <span className="ml-1 text-blue-200">
                     {sortDirection === 'asc' ? '▲' : '▼'}
                   </span>
                 )}
@@ -74,28 +74,35 @@ export const UserTable = ({ users }: UserTableProps) => {
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('company.name')}
             >
               <div className="flex items-center">
                 Company
                 {sortField === 'company.name' && (
-                  <span className="ml-1 text-blue-500">
+                  <span className="ml-1 text-blue-200">
                     {sortDirection === 'asc' ? '▲' : '▼'}
                   </span>
                 )}
               </div>
             </th>
-            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
               Actions
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className="bg-white divide-y divide-gray-200">
           {sortedUsers.map((user) => (
             <tr key={user.id} className="hover:bg-blue-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-800">{user.name}</div>
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-900">
+                    <span className="text-sm font-medium">{user.name.charAt(0)}</span>
+                  </div>
+                  <div className="ml-4">
+                    <div className="text-sm font-medium text-gray-800">{user.name}</div>
+                  </div>
+                </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-600">{user.email}</div>
@@ -106,7 +113,7 @@ export const UserTable = ({ users }: UserTableProps) => {
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <Link 
                   href={`/users/${user.id}`} 
-                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-900 hover:bg-blue-800 transition-colors shadow-sm"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />

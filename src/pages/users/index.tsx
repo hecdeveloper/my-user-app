@@ -23,7 +23,7 @@ export default function UsersPage({ users, error }: UsersPageProps) {
           </svg>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Failed to Load Users</h2>
           <p className="text-gray-600 mb-8">{error}</p>
-          <Link href="/users" className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-medium text-white hover:bg-blue-700 transition-colors shadow-sm">
+          <Link href="/users" className="inline-flex items-center px-4 py-2 bg-blue-900 border border-transparent rounded-md font-medium text-white hover:bg-blue-800 transition-colors shadow-sm">
             Try Again
           </Link>
         </div>
@@ -36,7 +36,7 @@ export default function UsersPage({ users, error }: UsersPageProps) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="text-center py-12 px-4 bg-white rounded-xl shadow-md">
-          <svg className="animate-spin h-10 w-10 text-blue-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg className="animate-spin h-10 w-10 text-blue-900 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
@@ -55,22 +55,34 @@ export default function UsersPage({ users, error }: UsersPageProps) {
   return (
     <>
       <Head>
-        <title>User Listing | Browse Users</title>
+        <title>User Directory | Browse Users</title>
         <meta name="description" content="Browse all users" />
       </Head>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Users</h1>
-          <p className="text-gray-600">Browse and search for users in our database.</p>
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">Users Directory</h1>
+              <p className="text-gray-600">Browse and search for users in our database.</p>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <div className="flex items-center bg-blue-900 text-white rounded-lg px-4 py-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                </svg>
+                <span className="font-medium">{filteredUsers.length} Users</span>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8 border border-gray-100">
-          <div className="p-4 sm:p-6 border-b border-gray-100">
+          <div className="p-4 sm:p-6 border-b border-gray-100 bg-blue-50">
             <div className="relative max-w-md">
               <input
                 type="text"
                 placeholder="Search by name, email or company..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-900 focus:border-blue-900"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 aria-label="Search users"

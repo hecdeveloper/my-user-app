@@ -3,11 +3,15 @@
 :root {
   --background: #f8fafc;
   --foreground: #334155;
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
+  --primary: #1e40af;
+  --primary-hover: #1e3a8a;
   --secondary: #f1f5f9;
-  --accent: #f0f9ff;
+  --accent: #dbeafe;
   --border: #e2e8f0;
+  --card-bg: #ffffff;
+  --header-bg: #ffffff;
+  --footer-bg: #ffffff;
+  --highlight: #eff6ff;
 }
 
 @theme inline {
@@ -22,11 +26,15 @@
   :root {
     --background: #f8fafc;
     --foreground: #334155;
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
+    --primary: #1e40af;
+    --primary-hover: #1e3a8a;
     --secondary: #f1f5f9;
-    --accent: #f0f9ff;
+    --accent: #dbeafe;
     --border: #e2e8f0;
+    --card-bg: #ffffff;
+    --header-bg: #ffffff;
+    --footer-bg: #ffffff;
+    --highlight: #eff6ff;
   }
 }
 
