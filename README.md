@@ -1,40 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# User Listing Application
+
+A Next.js application to browse and manage user data fetched from an external API.
+
+## Features
+
+- View a list of all users with sortable columns
+- Search users by name, email, or company
+- View detailed user information on dedicated pages
+- Responsive design with Tailwind CSS
+- Server-side rendering for the user list page
+- Static generation with incremental static regeneration for user detail pages
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [JSON Placeholder API](https://jsonplaceholder.typicode.com/) - RESTful API for demo data
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 16.8.0 or later
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/user-listing-app.git
+cd user-listing-app
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```
+my-user-app/
+├── src/
+│   ├── components/        # Reusable React components
+│   │   ├── UserCard.tsx   # Component for detailed user view
+│   │   └── UserTable.tsx  # Table component with sorting
+│   ├── pages/             # Next.js pages
+│   │   ├── index.tsx      # Home page
+│   │   ├── _app.tsx       # App wrapper component
+│   │   └── users/         # User pages
+│   │       ├── index.tsx  # User listing page
+│   │       └── [id].tsx   # User detail page
+│   ├── styles/            # Global styles
+│   └── types/             # TypeScript type definitions
+├── public/                # Static files
+├── README.md              # Project documentation
+└── package.json           # Dependencies and scripts
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application can be easily deployed to Vercel:
 
-## Learn More
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fuser-listing-app)
 
-To learn more about Next.js, take a look at the following resources:
+## License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.
