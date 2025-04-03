@@ -41,8 +41,8 @@ export const UserTable = ({ users }: UserTableProps) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full bg-white divide-y divide-gray-200 rounded-lg overflow-hidden">
-        <thead className="bg-gray-50">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead>
           <tr>
             <th 
               scope="col" 
@@ -52,7 +52,7 @@ export const UserTable = ({ users }: UserTableProps) => {
               <div className="flex items-center">
                 Name
                 {sortField === 'name' && (
-                  <span className="ml-1">
+                  <span className="ml-1 text-blue-500">
                     {sortDirection === 'asc' ? '▲' : '▼'}
                   </span>
                 )}
@@ -66,7 +66,7 @@ export const UserTable = ({ users }: UserTableProps) => {
               <div className="flex items-center">
                 Email
                 {sortField === 'email' && (
-                  <span className="ml-1">
+                  <span className="ml-1 text-blue-500">
                     {sortDirection === 'asc' ? '▲' : '▼'}
                   </span>
                 )}
@@ -80,31 +80,38 @@ export const UserTable = ({ users }: UserTableProps) => {
               <div className="flex items-center">
                 Company
                 {sortField === 'company.name' && (
-                  <span className="ml-1">
+                  <span className="ml-1 text-blue-500">
                     {sortDirection === 'asc' ? '▲' : '▼'}
                   </span>
                 )}
               </div>
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
           {sortedUsers.map((user) => (
-            <tr key={user.id} className="hover:bg-gray-50">
+            <tr key={user.id} className="hover:bg-blue-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                <div className="text-sm font-medium text-gray-800">{user.name}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-500">{user.email}</div>
+                <div className="text-sm text-gray-600">{user.email}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-500">{user.company.name}</div>
+                <div className="text-sm text-gray-600">{user.company.name}</div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <Link href={`/users/${user.id}`} className="text-blue-600 hover:text-blue-900">
+              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <Link 
+                  href={`/users/${user.id}`} 
+                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                  </svg>
                   View Details
                 </Link>
               </td>
