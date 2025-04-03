@@ -2,6 +2,19 @@
 
 A Next.js application to browse and manage user data fetched from an external API.
 
+## Live Demo
+
+Visit the live application: [https://my-user-a9a9cglrk-hecdevelopers-projects.vercel.app](https://my-user-a9a9cglrk-hecdevelopers-projects.vercel.app)
+
+## 🖼️ Preview
+
+To add a screenshot of your app:
+1. Take a screenshot of your application
+2. Save it as `screenshot.png` in the `public` folder
+3. Uncomment the line below:
+
+<!-- ![User List Screenshot](./public/screenshot.png) -->
+
 ## Features
 
 - View a list of all users with sortable columns
@@ -30,8 +43,8 @@ A Next.js application to browse and manage user data fetched from an external AP
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/user-listing-app.git
-cd user-listing-app
+git clone https://github.com/hecdeveloper/my-user-app.git
+cd my-user-app
 ```
 
 2. Install dependencies:
@@ -75,9 +88,9 @@ my-user-app/
 
 ## Deployment
 
-The application can be easily deployed to Vercel:
+The application is deployed on Vercel:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fuser-listing-app)
+[![Deployed on Vercel](https://vercel.com/button)](https://my-user-a9a9cglrk-hecdevelopers-projects.vercel.app)
 
 ## License
 

@@ -23,15 +23,15 @@ export const UserTable = ({ users }: UserTableProps) => {
   };
 
   const sortedUsers = [...users].sort((a, b) => {
-    let valueA: any;
-    let valueB: any;
+    let valueA: string;
+    let valueB: string;
 
     if (sortField === 'company.name') {
       valueA = a.company.name;
       valueB = b.company.name;
     } else {
-      valueA = a[sortField];
-      valueB = b[sortField];
+      valueA = a[sortField as keyof Pick<User, 'name' | 'email'>];
+      valueB = b[sortField as keyof Pick<User, 'name' | 'email'>];
     }
 
     if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
