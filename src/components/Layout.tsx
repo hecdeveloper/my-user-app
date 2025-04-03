@@ -33,7 +33,7 @@ export const Layout = ({ children, title = 'User Listing App', description = 'Br
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center">
               <Link href="/" className="flex items-center space-x-2">
-                <div className="bg-blue-600 text-white rounded-full w-10 h-10"></div>
+                <div className="bg-blue-600 text-white rounded-full w-8 h-8"></div>
                 <span className="text-xl font-bold text-gray-800">User Directory</span>
               </Link>
               <nav>
