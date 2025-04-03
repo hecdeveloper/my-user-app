@@ -9,7 +9,7 @@ export default function Home() {
       </Head>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center my-16">
-          <div className="inline-flex items-center justify-center p-2 bg-blue-900 text-white rounded-full mb-6">
+          <div className="inline-flex items-center justify-center p-2 bg-blue-600 text-white rounded-full mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" viewBox="0 0 20 20" fill="currentColor">
               <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
             </svg>
@@ -21,7 +21,7 @@ export default function Home() {
           
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-16">
             <Link href="/users" 
-                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 transition-colors shadow-sm">
+                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
               </svg>
@@ -39,13 +39,13 @@ export default function Home() {
           </div>
           
           <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-            <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-6 px-8">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white py-6 px-8">
               <h2 className="text-2xl font-bold">Key Features</h2>
             </div>
             <div className="p-8">              
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="bg-blue-50 p-6 rounded-lg border border-blue-100 shadow-sm">
-                  <div className="bg-blue-900 rounded-full w-12 h-12 flex items-center justify-center text-white mx-auto mb-4">
+                  <div className="bg-blue-600 rounded-full w-12 h-12 flex items-center justify-center text-white mx-auto mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -54,7 +54,7 @@ export default function Home() {
                   <p className="text-gray-600 text-center">Easily search and filter users by name, email, or company.</p>
                 </div>
                 <div className="bg-blue-50 p-6 rounded-lg border border-blue-100 shadow-sm">
-                  <div className="bg-blue-900 rounded-full w-12 h-12 flex items-center justify-center text-white mx-auto mb-4">
+                  <div className="bg-blue-600 rounded-full w-12 h-12 flex items-center justify-center text-white mx-auto mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
                     </svg>
@@ -63,7 +63,7 @@ export default function Home() {
                   <p className="text-gray-600 text-center">Sort the user list by different columns with a single click.</p>
                 </div>
                 <div className="bg-blue-50 p-6 rounded-lg border border-blue-100 shadow-sm">
-                  <div className="bg-blue-900 rounded-full w-12 h-12 flex items-center justify-center text-white mx-auto mb-4">
+                  <div className="bg-blue-600 rounded-full w-12 h-12 flex items-center justify-center text-white mx-auto mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>

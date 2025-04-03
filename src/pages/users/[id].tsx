@@ -18,7 +18,7 @@ export default function UserDetailPage({ user }: UserDetailPageProps) {
           </svg>
           <h1 className="text-2xl font-bold text-gray-800 mb-4">User not found</h1>
           <p className="text-gray-600 mb-6">The user you&apos;re looking for doesn&apos;t exist or has been removed.</p>
-          <Link href="/users" className="inline-flex items-center px-4 py-2 bg-blue-900 border border-transparent rounded-md font-medium text-white hover:bg-blue-800 transition-colors shadow-sm">
+          <Link href="/users" className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-medium text-white hover:bg-blue-500 transition-colors shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
@@ -39,7 +39,7 @@ export default function UserDetailPage({ user }: UserDetailPageProps) {
         <div className="mb-6">
           <Link 
             href="/users" 
-            className="inline-flex items-center text-gray-600 hover:text-blue-900 font-medium transition-colors"
+            className="inline-flex items-center text-gray-600 hover:text-blue-600 font-medium transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
