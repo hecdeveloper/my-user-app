@@ -8,12 +8,7 @@ Visit the live application: [https://my-user-2yy03hcj5-hecdevelopers-projects.ve
 
 ## 🖼️ Preview
 
-To add a screenshot of your app:
-1. Take a screenshot of your application
-2. Save it as `screenshot.png` in the `public` folder
-3. Uncomment the line below:
-
-<!-- ![User List Screenshot](./public/screenshot.png) -->
+![User List Screenshot](./public/screenshot.png)
 
 ## Features
 
