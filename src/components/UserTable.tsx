@@ -1,4 +1,4 @@
-import { useMemo, useState, memo } from 'react';
+import { useMemo, useState, memo, useEffect } from 'react';
 import Link from 'next/link';
 import { User } from '@/types/user';
 
@@ -7,13 +7,22 @@ interface UserTableProps {
 }
 
 export const UserTable = memo(({ users }: UserTableProps) => {
+  console.log('📊 UserTable rendering with', users.length, 'users');
+  
   const [sortBy, setSortBy] = useState<'name' | 'email' | 'company'>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
   
+  // Reset to page 0 when users list changes (e.g., when filtering)
+  useEffect(() => {
+    console.log('📊 Users prop changed, resetting to page 0');
+    setPage(0);
+  }, [users]);
+  
   // Handle sorting
   const handleSort = (column: 'name' | 'email' | 'company') => {
+    console.log('📊 Sorting by', column, 'current direction:', sortDirection);
     if (sortBy === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -24,6 +33,7 @@ export const UserTable = memo(({ users }: UserTableProps) => {
   
   // Sort users 
   const sortedUsers = useMemo(() => {
+    console.log('📊 Sorting users...');
     const sorted = [...users].sort((a, b) => {
       let valueA, valueB;
       
@@ -40,6 +50,7 @@ export const UserTable = memo(({ users }: UserTableProps) => {
       return 0;
     });
     
+    console.log('📊 Sorting complete');
     return sorted;
   }, [users, sortBy, sortDirection]);
   
@@ -47,6 +58,7 @@ export const UserTable = memo(({ users }: UserTableProps) => {
   const paginatedUsers = useMemo(() => {
     const start = page * rowsPerPage;
     const paginated = sortedUsers.slice(start, start + rowsPerPage);
+    console.log(`📊 Paginating: showing ${paginated.length} users on page ${page + 1} of ${Math.ceil(sortedUsers.length / rowsPerPage)}`);
     return paginated;
   }, [sortedUsers, page, rowsPerPage]);
   
@@ -66,9 +78,29 @@ export const UserTable = memo(({ users }: UserTableProps) => {
   };
 
   const totalPages = Math.ceil(sortedUsers.length / rowsPerPage);
+  
+  // Show sample of actual search data when few users
+  if (users.length < 20) {
+    console.log('📊 User sample for debugging:', users.map(u => ({
+      id: u.id, 
+      name: u.name,
+      email: u.email,
+      company: u.company.name
+    })));
+  }
 
   return (
     <div className="overflow-hidden">
+      {/* Add a hidden debug info section */}
+      <div className="hidden">
+        <p data-testid="debug-info">
+          Total: {users.length}, 
+          Sorted: {sortedUsers.length}, 
+          Page: {page + 1}/{totalPages}, 
+          Showing: {paginatedUsers.length}
+        </p>
+      </div>
+
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
@@ -105,42 +137,46 @@ export const UserTable = memo(({ users }: UserTableProps) => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {paginatedUsers.map((user) => (
-            <tr 
-              key={user.id}
-              className="hover:bg-blue-50 transition-colors"
-            >
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 h-10 w-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
-                    <span className="text-lg font-medium">{user.name.charAt(0)}</span>
+          {paginatedUsers.length > 0 ? (
+            paginatedUsers.map((user) => (
+              <tr 
+                key={user.id}
+                className="hover:bg-blue-50 transition-colors"
+              >
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 h-10 w-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                      <span className="text-lg font-medium">{user.name.charAt(0)}</span>
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                      <div className="text-sm text-gray-500">@{user.id}</div>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                    <div className="text-sm text-gray-500">@{user.id}</div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{user.email}</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{user.company.name}</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <Link
-                  href={`/users/${user.id}`}
-                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                  </svg>
-                  View Details
-                </Link>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{user.email}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{user.company.name}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <Link
+                    href={`/users/${user.id}`}
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    View Details
+                  </Link>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
+                No users to display
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
@@ -149,7 +185,10 @@ export const UserTable = memo(({ users }: UserTableProps) => {
         <div className="mt-4 flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
           <div className="flex-1 flex justify-between sm:hidden">
             <button
-              onClick={() => setPage(Math.max(0, page - 1))}
+              onClick={() => {
+                console.log('📊 Moving to previous page');
+                setPage(Math.max(0, page - 1));
+              }}
               disabled={page === 0}
               className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
                 page === 0 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -158,7 +197,10 @@ export const UserTable = memo(({ users }: UserTableProps) => {
               Previous
             </button>
             <button
-              onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
+              onClick={() => {
+                console.log('📊 Moving to next page');
+                setPage(Math.min(totalPages - 1, page + 1));
+              }}
               disabled={page === totalPages - 1}
               className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
                 page === totalPages - 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -200,7 +242,10 @@ export const UserTable = memo(({ users }: UserTableProps) => {
                   return (
                     <button
                       key={pageNum}
-                      onClick={() => setPage(pageNum)}
+                      onClick={() => {
+                        console.log(`📊 Moving to page ${pageNum + 1}`);
+                        setPage(pageNum);
+                      }}
                       className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                         page === pageNum
                           ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
