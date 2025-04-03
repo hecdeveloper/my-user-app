@@ -17,7 +17,6 @@ export default function UsersPage({ users, error, initialSearch = '' }: UsersPag
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(initialSearch);
-  const [isLoaded, setIsLoaded] = useState(true);
   
   // Track if update is from URL change to prevent loops
   const isProcessingURLUpdate = useRef(false);
@@ -35,35 +34,40 @@ export default function UsersPage({ users, error, initialSearch = '' }: UsersPag
   
   // Update URL with search parameter to make it shareable and bookmarkable
   // Use debounce to prevent too many history entries and API calls
-  const updateSearchParams = useCallback(
-    debounce((search: string) => {
+  const updateSearchParams = useCallback((search: string) => {
+    const debouncedFn = debounce((term: string) => {
       // Prevent circular updates - skip if term is already in URL
-      if (router.query.search === search || 
-         (search === '' && !router.query.search)) {
-        setDebouncedSearchTerm(search);
+      if (router.query.search === term || 
+         (term === '' && !router.query.search)) {
+        setDebouncedSearchTerm(term);
         return;
       }
       
       isProcessingURLUpdate.current = true;
       const url = {
         pathname: router.pathname,
-        query: { ...(search ? { search } : {}) }
+        query: { ...(term ? { search: term } : {}) }
       };
       router.push(url, undefined, { shallow: true })
         .then(() => {
-          setDebouncedSearchTerm(search);
+          setDebouncedSearchTerm(term);
           setTimeout(() => {
             isProcessingURLUpdate.current = false;
           }, 100);
         });
-    }, 300),
-    [router]
-  );
+    }, 300);
+    
+    debouncedFn(search);
+    
+    // Return the debounce function's cancel method so it can be cleaned up
+    return debouncedFn.cancel;
+  }, [router]);
 
   // Effect to update URL when search changes
   useEffect(() => {
     if (!isProcessingURLUpdate.current) {
-      updateSearchParams(searchTerm);
+      const cancel = updateSearchParams(searchTerm);
+      return () => cancel();
     }
   }, [searchTerm, updateSearchParams]);
 
