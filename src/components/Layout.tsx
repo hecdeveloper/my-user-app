@@ -33,9 +33,10 @@ export const Layout = ({ children, title = 'User Listing App', description = 'Br
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center">
               <Link href="/" className="flex items-center space-x-2">
-                <div className="bg-blue-600 text-white rounded-lg p-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                <div className="bg-blue-600 text-white rounded-full p-2.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="7" r="4" />
+                    <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
                   </svg>
                 </div>
                 <span className="text-xl font-bold text-gray-800">User Directory</span>
@@ -69,9 +70,10 @@ export const Layout = ({ children, title = 'User Listing App', description = 'Br
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="mb-4 md:mb-0">
                 <div className="flex items-center space-x-2 mb-2">
-                  <div className="bg-blue-600 text-white rounded-lg p-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                  <div className="bg-blue-600 text-white rounded-full p-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="7" r="4" />
+                      <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
                     </svg>
                   </div>
                   <span className="font-semibold text-gray-700">User Directory</span>
