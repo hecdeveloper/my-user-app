@@ -8,6 +8,7 @@ export default function Document() {
         <meta name="author" content="Héctor Ibarra" />
         <meta property="og:title" content="User Listing App" />
         <meta property="og:description" content="Browse and manage users in a clean interface" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
       </Head>
       <body className="antialiased">
         <Main />

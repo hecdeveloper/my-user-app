@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { GetServerSideProps } from 'next';
 import { User } from '@/types/user';
-import { UserTable } from '@/components/UserTable';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { debounce } from 'lodash';
+import { UserTable } from '@/components/UserTable';
 
 interface UsersPageProps {
   users: User[];
@@ -17,24 +17,54 @@ export default function UsersPage({ users, error, initialSearch = '' }: UsersPag
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(initialSearch);
+  const [isLoaded, setIsLoaded] = useState(true);
+  
+  // Track if update is from URL change to prevent loops
+  const isProcessingURLUpdate = useRef(false);
+  
+  // Effect to update from URL when query changes
+  useEffect(() => {
+    if (router.isReady && router.query.search !== undefined && !isProcessingURLUpdate.current) {
+      const searchFromURL = router.query.search ? String(router.query.search) : '';
+      if (searchFromURL !== searchTerm) {
+        setSearchTerm(searchFromURL);
+        setDebouncedSearchTerm(searchFromURL);
+      }
+    }
+  }, [router.isReady, router.query.search, searchTerm]);
   
   // Update URL with search parameter to make it shareable and bookmarkable
   // Use debounce to prevent too many history entries and API calls
   const updateSearchParams = useCallback(
     debounce((search: string) => {
+      // Prevent circular updates - skip if term is already in URL
+      if (router.query.search === search || 
+         (search === '' && !router.query.search)) {
+        setDebouncedSearchTerm(search);
+        return;
+      }
+      
+      isProcessingURLUpdate.current = true;
       const url = {
         pathname: router.pathname,
         query: { ...(search ? { search } : {}) }
       };
-      router.push(url, undefined, { shallow: true });
-      setDebouncedSearchTerm(search);
+      router.push(url, undefined, { shallow: true })
+        .then(() => {
+          setDebouncedSearchTerm(search);
+          setTimeout(() => {
+            isProcessingURLUpdate.current = false;
+          }, 100);
+        });
     }, 300),
     [router]
   );
 
   // Effect to update URL when search changes
   useEffect(() => {
-    updateSearchParams(searchTerm);
+    if (!isProcessingURLUpdate.current) {
+      updateSearchParams(searchTerm);
+    }
   }, [searchTerm, updateSearchParams]);
 
   // Prefetch detail pages for the first 5 users when component mounts
@@ -182,8 +212,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   } catch (error) {
-    console.error('Error fetching users:', error);
-    
     return {
       props: {
         users: [],

@@ -4,24 +4,6 @@ import Link from 'next/link';
 import { User } from '@/types/user';
 import { UserCard } from '@/components/UserCard';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
-
-// Dynamically import the UserCard component with loading fallback
-const DynamicUserCard = dynamic(() => import('@/components/UserCard').then(mod => ({ default: mod.UserCard })), {
-  loading: () => (
-    <div className="animate-pulse bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 h-96">
-      <div className="bg-gradient-to-r from-blue-300 to-blue-200 h-40"></div>
-      <div className="p-8 space-y-4">
-        <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto"></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gray-100 p-5 rounded-lg h-40"></div>
-          <div className="bg-gray-100 p-5 rounded-lg h-40"></div>
-        </div>
-      </div>
-    </div>
-  ),
-  ssr: true,
-});
 
 interface UserDetailPageProps {
   user: User;
@@ -84,7 +66,7 @@ export default function UserDetailPage({ user }: UserDetailPageProps) {
           </Link>
         </div>
         
-        <DynamicUserCard user={user} />
+        <UserCard user={user} />
       </div>
     </>
   );
@@ -95,19 +77,20 @@ export const getStaticPaths: GetStaticPaths = async () => {
     const response = await fetch('https://jsonplaceholder.typicode.com/users');
     const users: User[] = await response.json();
     
-    const paths = users.slice(0, 3).map((user) => ({
+    // Pre-render all user pages at build time
+    const paths = users.map((user) => ({
       params: { id: user.id.toString() },
     }));
     
     return {
       paths,
-      fallback: true, // Change to true for faster initial load and build
+      fallback: false, // Changed to false to avoid loading issues
     };
   } catch (error) {
     console.error('Error fetching user paths:', error);
     return {
       paths: [],
-      fallback: true,
+      fallback: false,
     };
   }
 };

@@ -1,151 +1,237 @@
-import { useState, memo, useCallback } from 'react';
-import { User } from '@/types/user';
+import { useMemo, useState, memo } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { User } from '@/types/user';
 
 interface UserTableProps {
   users: User[];
 }
 
-type SortField = 'name' | 'email' | 'company.name';
-type SortDirection = 'asc' | 'desc';
-
-// Make the user row a separate component to optimize rendering
-const UserRow = memo(({ user }: { user: User }) => {
-  const router = useRouter();
-  
-  // Use router.push for programmatic navigation
-  const navigateToUserDetail = useCallback(() => {
-    router.push(`/users/${user.id}`);
-  }, [router, user.id]);
-  
-  return (
-    <tr key={user.id} className="hover:bg-blue-50 transition-colors">
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center">
-          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-            <span className="text-sm font-medium">{user.name.charAt(0)}</span>
-          </div>
-          <div className="ml-4">
-            <div className="text-sm font-medium text-gray-800">{user.name}</div>
-          </div>
-        </div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-600">{user.email}</div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-600">{user.company.name}</div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <Link 
-          href={`/users/${user.id}`} 
-          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-            <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-          </svg>
-          View Details
-        </Link>
-      </td>
-    </tr>
-  );
-});
-
-UserRow.displayName = 'UserRow';
-
 export const UserTable = memo(({ users }: UserTableProps) => {
-  const [sortField, setSortField] = useState<SortField>('name');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-
-  const handleSort = useCallback((field: SortField) => {
-    setSortField(prev => {
-      if (prev === field) {
-        setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-        return field;
-      } else {
-        setSortDirection('asc');
-        return field;
-      }
-    });
-  }, []);
-
-  const sortedUsers = [...users].sort((a, b) => {
-    let valueA: string;
-    let valueB: string;
-
-    if (sortField === 'company.name') {
-      valueA = a.company.name;
-      valueB = b.company.name;
+  const [sortBy, setSortBy] = useState<'name' | 'email' | 'company'>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  
+  // Handle sorting
+  const handleSort = (column: 'name' | 'email' | 'company') => {
+    if (sortBy === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      valueA = a[sortField as keyof Pick<User, 'name' | 'email'>];
-      valueB = b[sortField as keyof Pick<User, 'name' | 'email'>];
+      setSortBy(column);
+      setSortDirection('asc');
     }
+  };
+  
+  // Sort users 
+  const sortedUsers = useMemo(() => {
+    const sorted = [...users].sort((a, b) => {
+      let valueA, valueB;
+      
+      if (sortBy === 'company') {
+        valueA = a.company.name.toLowerCase();
+        valueB = b.company.name.toLowerCase();
+      } else {
+        valueA = a[sortBy].toLowerCase();
+        valueB = b[sortBy].toLowerCase();
+      }
+      
+      if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
+      if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+    
+    return sorted;
+  }, [users, sortBy, sortDirection]);
+  
+  // Paginate users
+  const paginatedUsers = useMemo(() => {
+    const start = page * rowsPerPage;
+    const paginated = sortedUsers.slice(start, start + rowsPerPage);
+    return paginated;
+  }, [sortedUsers, page, rowsPerPage]);
+  
+  // Get a sort indicator for column headers
+  const getSortIndicator = (column: 'name' | 'email' | 'company') => {
+    if (sortBy !== column) return null;
+    
+    return sortDirection === 'asc' ? (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+      </svg>
+    ) : (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+      </svg>
+    );
+  };
 
-    if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
-    if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
-    return 0;
-  });
+  const totalPages = Math.ceil(sortedUsers.length / rowsPerPage);
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+        <thead className="bg-gray-50">
           <tr>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('name')}
             >
               <div className="flex items-center">
-                Name
-                {sortField === 'name' && (
-                  <span className="ml-1 text-blue-100">
-                    {sortDirection === 'asc' ? '▲' : '▼'}
-                  </span>
-                )}
+                Name {getSortIndicator('name')}
               </div>
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('email')}
             >
               <div className="flex items-center">
-                Email
-                {sortField === 'email' && (
-                  <span className="ml-1 text-blue-100">
-                    {sortDirection === 'asc' ? '▲' : '▼'}
-                  </span>
-                )}
+                Email {getSortIndicator('email')}
               </div>
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer"
-              onClick={() => handleSort('company.name')}
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              onClick={() => handleSort('company')}
             >
               <div className="flex items-center">
-                Company
-                {sortField === 'company.name' && (
-                  <span className="ml-1 text-blue-100">
-                    {sortDirection === 'asc' ? '▲' : '▼'}
-                  </span>
-                )}
+                Company {getSortIndicator('company')}
               </div>
             </th>
-            <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
-              Actions
+            <th scope="col" className="relative px-6 py-3">
+              <span className="sr-only">Actions</span>
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {sortedUsers.map((user) => (
-            <UserRow key={user.id} user={user} />
+          {paginatedUsers.map((user) => (
+            <tr 
+              key={user.id}
+              className="hover:bg-blue-50 transition-colors"
+            >
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 h-10 w-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                    <span className="text-lg font-medium">{user.name.charAt(0)}</span>
+                  </div>
+                  <div className="ml-4">
+                    <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                    <div className="text-sm text-gray-500">@{user.id}</div>
+                  </div>
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-900">{user.email}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-900">{user.company.name}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <Link
+                  href={`/users/${user.id}`}
+                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                  </svg>
+                  View Details
+                </Link>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+          <div className="flex-1 flex justify-between sm:hidden">
+            <button
+              onClick={() => setPage(Math.max(0, page - 1))}
+              disabled={page === 0}
+              className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                page === 0 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
+              disabled={page === totalPages - 1}
+              className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                page === totalPages - 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Next
+            </button>
+          </div>
+          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm text-gray-700">
+                Showing <span className="font-medium">{page * rowsPerPage + 1}</span> to{' '}
+                <span className="font-medium">
+                  {Math.min((page + 1) * rowsPerPage, sortedUsers.length)}
+                </span>{' '}
+                of <span className="font-medium">{sortedUsers.length}</span> results
+              </p>
+            </div>
+            <div>
+              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button
+                  onClick={() => setPage(Math.max(0, page - 1))}
+                  disabled={page === 0}
+                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 text-sm font-medium ${
+                    page === 0 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
+                  }`}
+                >
+                  <span className="sr-only">Previous</span>
+                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                  const pageNum = Math.min(
+                    Math.max(0, page - 2) + i,
+                    totalPages - 1
+                  );
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setPage(pageNum)}
+                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                        page === pageNum
+                          ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                          : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                      }`}
+                    >
+                      {pageNum + 1}
+                    </button>
+                  );
+                })}
+                
+                <button
+                  onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
+                  disabled={page === totalPages - 1}
+                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 text-sm font-medium ${
+                    page === totalPages - 1 ? 'bg-gray-100 text-gray-400' : 'bg-white text-gray-500 hover:bg-gray-50'
+                  }`}
+                >
+                  <span className="sr-only">Next</span>
+                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}); 
+});
+
+// Add display name for easier debugging
+UserTable.displayName = 'UserTable'; 
