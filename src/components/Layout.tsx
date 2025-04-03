@@ -1,6 +1,7 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,6 +10,15 @@ interface LayoutProps {
 }
 
 export const Layout = ({ children, title = 'User Listing App', description = 'Browse and manage user data' }: LayoutProps) => {
+  const router = useRouter();
+  
+  // Prefetch important routes when component mounts
+  useEffect(() => {
+    // Prefetch main routes for instant navigation
+    router.prefetch('/');
+    router.prefetch('/users');
+  }, [router]);
+  
   return (
     <>
       <Head>
@@ -22,7 +32,7 @@ export const Layout = ({ children, title = 'User Listing App', description = 'Br
       
       <div className="flex flex-col min-h-screen">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 shadow-sm py-4">
+        <header className="bg-white border-b border-gray-200 shadow-sm py-4 sticky top-0 z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center">
               <Link href="/" className="flex items-center space-x-2">
@@ -36,12 +46,12 @@ export const Layout = ({ children, title = 'User Listing App', description = 'Br
               <nav>
                 <ul className="flex space-x-8">
                   <li>
-                    <Link href="/" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+                    <Link href="/" prefetch={true} className={`text-gray-600 hover:text-blue-600 font-medium transition-colors ${router.pathname === '/' ? 'text-blue-600' : ''}`}>
                       Home
                     </Link>
                   </li>
                   <li>
-                    <Link href="/users" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+                    <Link href="/users" prefetch={true} className={`text-gray-600 hover:text-blue-600 font-medium transition-colors ${router.pathname === '/users' || router.pathname.startsWith('/users/') ? 'text-blue-600' : ''}`}>
                       Users
                     </Link>
                   </li>

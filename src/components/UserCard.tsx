@@ -1,10 +1,11 @@
 import { User } from '@/types/user';
+import { memo } from 'react';
 
 interface UserCardProps {
   user: User;
 }
 
-export const UserCard = ({ user }: UserCardProps) => {
+export const UserCard = memo(({ user }: UserCardProps) => {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
       <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-8 text-white">
@@ -110,4 +111,8 @@ export const UserCard = ({ user }: UserCardProps) => {
       </div>
     </div>
   );
-}; 
+});
+
+UserCard.displayName = 'UserCard';
+
+export default UserCard; 

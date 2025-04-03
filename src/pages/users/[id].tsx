@@ -3,12 +3,48 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { User } from '@/types/user';
 import { UserCard } from '@/components/UserCard';
+import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the UserCard component with loading fallback
+const DynamicUserCard = dynamic(() => import('@/components/UserCard').then(mod => ({ default: mod.UserCard })), {
+  loading: () => (
+    <div className="animate-pulse bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 h-96">
+      <div className="bg-gradient-to-r from-blue-300 to-blue-200 h-40"></div>
+      <div className="p-8 space-y-4">
+        <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-gray-100 p-5 rounded-lg h-40"></div>
+          <div className="bg-gray-100 p-5 rounded-lg h-40"></div>
+        </div>
+      </div>
+    </div>
+  ),
+  ssr: true,
+});
 
 interface UserDetailPageProps {
   user: User;
 }
 
 export default function UserDetailPage({ user }: UserDetailPageProps) {
+  const router = useRouter();
+  
+  // If the page is still generating via fallback, show loading
+  if (router.isFallback) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center py-12 px-4 bg-white rounded-xl shadow-md">
+          <svg className="animate-spin h-10 w-10 text-blue-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p className="text-lg text-gray-600">Loading user details...</p>
+        </div>
+      </div>
+    );
+  }
+  
   if (!user) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -48,7 +84,7 @@ export default function UserDetailPage({ user }: UserDetailPageProps) {
           </Link>
         </div>
         
-        <UserCard user={user} />
+        <DynamicUserCard user={user} />
       </div>
     </>
   );
@@ -59,19 +95,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
     const response = await fetch('https://jsonplaceholder.typicode.com/users');
     const users: User[] = await response.json();
     
-    const paths = users.map((user) => ({
+    const paths = users.slice(0, 3).map((user) => ({
       params: { id: user.id.toString() },
     }));
     
     return {
       paths,
-      fallback: 'blocking',
+      fallback: true, // Change to true for faster initial load and build
     };
   } catch (error) {
     console.error('Error fetching user paths:', error);
     return {
       paths: [],
-      fallback: 'blocking',
+      fallback: true,
     };
   }
 };

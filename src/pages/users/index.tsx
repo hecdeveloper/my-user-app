@@ -1,17 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GetServerSideProps } from 'next';
 import { User } from '@/types/user';
 import { UserTable } from '@/components/UserTable';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { debounce } from 'lodash';
 
 interface UsersPageProps {
   users: User[];
   error?: string;
+  initialSearch?: string;
 }
 
-export default function UsersPage({ users, error }: UsersPageProps) {
-  const [searchTerm, setSearchTerm] = useState('');
+export default function UsersPage({ users, error, initialSearch = '' }: UsersPageProps) {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(initialSearch);
+  
+  // Update URL with search parameter to make it shareable and bookmarkable
+  // Use debounce to prevent too many history entries and API calls
+  const updateSearchParams = useCallback(
+    debounce((search: string) => {
+      const url = {
+        pathname: router.pathname,
+        query: { ...(search ? { search } : {}) }
+      };
+      router.push(url, undefined, { shallow: true });
+      setDebouncedSearchTerm(search);
+    }, 300),
+    [router]
+  );
+
+  // Effect to update URL when search changes
+  useEffect(() => {
+    updateSearchParams(searchTerm);
+  }, [searchTerm, updateSearchParams]);
+
+  // Prefetch detail pages for the first 5 users when component mounts
+  useEffect(() => {
+    if (users && users.length > 0) {
+      const prefetchCount = Math.min(users.length, 5);
+      for (let i = 0; i < prefetchCount; i++) {
+        router.prefetch(`/users/${users[i].id}`);
+      }
+    }
+  }, [users, router]);
   
   // Handle error state
   if (error) {
@@ -47,9 +81,9 @@ export default function UsersPage({ users, error }: UsersPageProps) {
   }
   
   const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.company.name.toLowerCase().includes(searchTerm.toLowerCase())
+    user.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+    user.company.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
   );
 
   return (
@@ -92,6 +126,16 @@ export default function UsersPage({ users, error }: UsersPageProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
+              {searchTerm && (
+                <button 
+                  onClick={() => setSearchTerm('')}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
         
@@ -112,7 +156,10 @@ export default function UsersPage({ users, error }: UsersPageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { search } = context.query;
+  const initialSearch = search ? String(search) : '';
+  
   try {
     const response = await fetch('https://jsonplaceholder.typicode.com/users');
     
@@ -120,7 +167,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
       return {
         props: {
           users: [],
-          error: `Failed to fetch users: ${response.status} ${response.statusText}`
+          error: `Failed to fetch users: ${response.status} ${response.statusText}`,
+          initialSearch
         },
       };
     }
@@ -130,6 +178,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
       props: {
         users,
+        initialSearch
       },
     };
   } catch (error) {
@@ -138,7 +187,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
       props: {
         users: [],
-        error: 'An error occurred while fetching users. Please try again.'
+        error: 'An error occurred while fetching users. Please try again.',
+        initialSearch
       },
     };
   }
