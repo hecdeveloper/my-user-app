@@ -4,7 +4,7 @@ A Next.js application to browse and manage user data fetched from an external AP
 
 ## Live Demo
 
-Visit the live application: [https://my-user-a9a9cglrk-hecdevelopers-projects.vercel.app](https://my-user-a9a9cglrk-hecdevelopers-projects.vercel.app)
+Visit the live application: [https://my-user-2yy03hcj5-hecdevelopers-projects.vercel.app](https://my-user-2yy03hcj5-hecdevelopers-projects.vercel.app)
 
 ## 🖼️ Preview
 
@@ -90,7 +90,7 @@ my-user-app/
 
 The application is deployed on Vercel:
 
-[![Deployed on Vercel](https://vercel.com/button)](https://my-user-a9a9cglrk-hecdevelopers-projects.vercel.app)
+[![Deployed on Vercel](https://vercel.com/button)](https://my-user-2yy03hcj5-hecdevelopers-projects.vercel.app)
 
 ## License
 
